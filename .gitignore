@@ -44,3 +44,6 @@ __screenshots__/
 !.env.example
 __pycache__/
 .claude/settings.local.json
+
+# 강의자료 및 과제 가이드 (저작물 — 저장소 공개 대상 아님)
+guide/
