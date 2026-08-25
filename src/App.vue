@@ -1,5 +1,5 @@
 <script setup>
-import WeatherMockup from '@/components/exercise/WeatherMockup.vue'
+import WeatherComposition from '@/components/exercise/WeatherComposition.vue'
 </script>
 
 <template>
@@ -7,8 +7,8 @@ import WeatherMockup from '@/components/exercise/WeatherMockup.vue'
     <h1>skala-vue — Weather 앱</h1>
 
     <section>
-      <h2>Weather Mockup (실습 3)</h2>
-      <WeatherMockup />
+      <h2>Weather Composition (실습 3)</h2>
+      <WeatherComposition />
     </section>
   </main>
 </template>

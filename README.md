@@ -45,17 +45,17 @@ src/
 
 ## 실습과제 리스트
 
-| #   | 주제                    | 실습명              | 상세                                                   |
-| --- | ----------------------- | ------------------- | ------------------------------------------------------ |
-| 1   | Project Scaffolding     | 프로젝트 스캐폴딩   | [docs/01-scaffolding.md](docs/01-scaffolding.md)       |
-| 2   | Vue Syntax              | Weather Mockup      | [docs/02-weather-mockup.md](docs/02-weather-mockup.md) |
-| 3   | Composition API         | Weather Composition | _진행 예정_                                            |
-| 4   | Vue Components          | Weather Component   | _진행 예정_                                            |
-| 5   | Vue Router              | Weather Router      | _진행 예정_                                            |
-| 6   | Pinia                   | Weather Store       | _진행 예정_                                            |
-| 7   | Axios                   | Weather Axios       | _진행 예정_                                            |
-| 8   | UI Libraries            | Weather UI Library  | _진행 예정_                                            |
-| 9   | Vite Build & Deployment | Weather Deployment  | _진행 예정_                                            |
+| #   | 주제                    | 실습명              | 상세                                                             |
+| --- | ----------------------- | ------------------- | ---------------------------------------------------------------- |
+| 1   | Project Scaffolding     | 프로젝트 스캐폴딩   | [docs/01-scaffolding.md](docs/01-scaffolding.md)                 |
+| 2   | Vue Syntax              | Weather Mockup      | [docs/02-weather-mockup.md](docs/02-weather-mockup.md)           |
+| 3   | Composition API         | Weather Composition | [docs/03-weather-composition.md](docs/03-weather-composition.md) |
+| 4   | Vue Components          | Weather Component   | _진행 예정_                                                      |
+| 5   | Vue Router              | Weather Router      | _진행 예정_                                                      |
+| 6   | Pinia                   | Weather Store       | _진행 예정_                                                      |
+| 7   | Axios                   | Weather Axios       | _진행 예정_                                                      |
+| 8   | UI Libraries            | Weather UI Library  | _진행 예정_                                                      |
+| 9   | Vite Build & Deployment | Weather Deployment  | _진행 예정_                                                      |
 
 ---
 
@@ -93,7 +93,27 @@ src/
 
 ---
 
+### 3. Composition API
+
+`WeatherMockup.vue`를 복사해 `computed`/`watch`/`watchEffect`를 적용했다(`WeatherComposition.vue`).
+
+**Customization 요약**
+
+- `filteredWeatherList` — 검색어 포함 여부로 필터링하는 `computed`
+- 검색 결과 3단계 분기 (전체 / 결과 있음 / 결과 없음)
+- `watch(selectedCity)` / `watchEffect(searchQuery)` — 상태 변화를 콘솔 로그로 추적
+- 본인 확장: 날씨 상태별 추천 필름 매칭(`matchedFilm`) + 매칭 이력(`filmMatchLog`) — RE100/발전량 예측 아이디어도 검토했으나 정밀 데이터가 유료 API 영역이라 이번엔 보류
+
+자세한 내용: [docs/03-weather-composition.md](docs/03-weather-composition.md)
+
+---
+
 ## 실습과제 평가 기준 (참고용)
+
+> **채점 핵심 기준**: 교재 요구사항을 그대로 받아적기만 한 코드는 낮은 점수를 받는다. 채점자가
+> 보는 건 "AI 코드 생성인지, 아니면 Vue를 실제로 이해하고 그 위에 본인만의 기능을 만들었는지"다.
+> 배운 문법을 확장해서 다양하게 응용해본 게 중요하고, 교재 요구사항은 반드시 그대로 지켜야 하는
+> 게 아니다.
 
 | 항목      | 배점 | 대응 위치                                                    |
 | --------- | ---- | ------------------------------------------------------------ |

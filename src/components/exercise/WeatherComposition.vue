@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch, watchEffect } from 'vue'
 
 // 과제 지문 활용 + 개수 추가
 const weatherList = ref([
@@ -14,15 +14,28 @@ const weatherList = ref([
 const searchQuery = ref('')
 const confirmedQuery = ref('')
 const selectedCity = ref('')
+const selectedCityId = ref('')
 const hoveredCityId = ref('')
 const favoritesOnly = ref(false)
 const favorites = ref([])
 const introHtml = ref('카드를 클릭하면 <strong>선택 도시</strong>가 하단 상태바에 표시됩니다.')
 
+// searchQuery가 바뀔 때만 재계산 - 도시 이름에 검색어가 포함된 항목만 필터링
+const filteredWeatherList = computed(() => {
+  const keyword = searchQuery.value.trim()
+  if (!keyword) return weatherList.value
+  return weatherList.value.filter((item) => item.name.includes(keyword))
+})
+
 // 양방향 바인딩 및 한글 처리
 const updateSearchQuery = (e) => {
   searchQuery.value = e.target.value
 }
+
+// watchEffect: 감시 대상을 따로 지정하지 않아도 내부에서 참조한 searchQuery를 자동 추적
+watchEffect(() => {
+  console.log(`[watchEffect] 현재 검색어: ${searchQuery.value}`)
+})
 
 // @submit.prevent 대상: Enter로 검색어를 확정할 때 폼의 기본 새로고침 차단
 const confirmSearch = () => {
@@ -35,11 +48,39 @@ const clearSearch = () => {
   confirmedQuery.value = ''
 }
 
-const selectCity = (name) => {
-  selectedCity.value = `${name}이(가) 선택되었습니다.`
+const selectCity = (item) => {
+  selectedCity.value = `${item.name}이(가) 선택되었습니다.`
+  selectedCityId.value = item.id
 }
 
-// 상세보기 버튼에서 버블링 발생 방지 - 템플릿에서 @click.stop처리
+// watch: selectedCity를 감시 - 상태바 문구가 바뀔 때만 실행되고 이전/현재 값을 함께 받음
+watch(selectedCity, (newValue, oldValue) => {
+  console.log(`[watch] 상태바 문구 변경: [${oldValue}] → [${newValue}]`)
+})
+
+// 날씨 상태별(맑음/흐림/비) 특징을 고려해서 추천 필름 매칭
+const FILM_MATCH = {
+  맑음: '코닥 포트라 400 — 쨍한 대비, 선명한 채도',
+  흐림: '일포드 HP5 (흑백) — 부드러운 톤, 인물 사진에 적합',
+  비: '시네스틸 800T — 고감도, 저조도 대응',
+}
+
+// selectedCityId가 바뀔 때만 재계산 — 선택된 도시의 날씨 상태에 맞는 필름 추천
+const matchedFilm = computed(() => {
+  const city = weatherList.value.find((item) => item.id === selectedCityId.value)
+  if (!city) return ''
+  return FILM_MATCH[city.status] ?? '추천 필름 준비 중'
+})
+
+const filmMatchLog = ref([])
+
+// watch: matchedFilm(파생값)을 감시 - 새로 매칭될 때마다 히스토리에 누적, 최근 5개만 유지
+watch(matchedFilm, (newFilm) => {
+  if (!newFilm) return
+  filmMatchLog.value = [`${selectedCity.value} ${newFilm}`, ...filmMatchLog.value].slice(0, 5)
+})
+
+// 상세보기 버튼에서 버블링 발생 방지 - 템플릿에서 @click.stop 처리
 const showDetail = (cityName, status) => {
   window.alert(`${cityName}의 현재 날씨는 [${status}] 상태입니다.`)
 }
@@ -54,7 +95,7 @@ const toggleFavorite = (id) => {
 </script>
 
 <template>
-  <div v-cloak class="practice-section weather-mockup">
+  <div v-cloak class="practice-section weather-composition">
     <p v-once class="hint">이 안내문은 최초 렌더링 시 한 번만 표시됩니다 (v-once).</p>
     <p v-html="introHtml"></p>
 
@@ -72,6 +113,8 @@ const toggleFavorite = (id) => {
     <p v-text="'현재 검색어: ' + searchQuery"></p>
     <p v-if="confirmedQuery">Enter로 확정한 검색어: {{ confirmedQuery }}</p>
     <p v-if="!searchQuery">전체 {{ weatherList.length }}개 도시</p>
+    <p v-else-if="filteredWeatherList.length === 0">검색 결과와 일치하는 도시가 없습니다.</p>
+    <p v-else>검색 결과 {{ filteredWeatherList.length }}개 도시</p>
 
     <label>
       <input type="checkbox" v-model="favoritesOnly" />
@@ -82,12 +125,12 @@ const toggleFavorite = (id) => {
     <p class="hint" v-pre>카드 이름은 {{ item.name }} 형태의 mustache 문법으로 출력됩니다.</p>
     <div class="card-list">
       <div
-        v-for="item in weatherList"
+        v-for="item in filteredWeatherList"
         v-show="!favoritesOnly || favorites.includes(item.id)"
         :key="item.id"
         class="weather-card"
         :class="{ hot: item.temp >= 25, hovered: hoveredCityId === item.id }"
-        @click="selectCity(item.name)"
+        @click="selectCity(item)"
         @mouseenter="hoveredCityId = item.id"
         @mouseleave="hoveredCityId = ''"
       >
@@ -108,6 +151,13 @@ const toggleFavorite = (id) => {
     <h3>상태바</h3>
     <p v-if="selectedCity" class="status-bar">{{ selectedCity }}</p>
     <p v-else class="status-bar">카드를 클릭해 도시를 선택하세요.</p>
+
+    <h3>오늘 날씨에 맞는 필름 추천</h3>
+    <p v-if="matchedFilm" class="status-bar">🎞️ {{ matchedFilm }}</p>
+    <p v-else class="status-bar">도시를 선택하면 추천 필름을 안내합니다.</p>
+    <ul v-if="filmMatchLog.length" class="hint">
+      <li v-for="(log, index) in filmMatchLog" :key="index">{{ log }}</li>
+    </ul>
   </div>
 </template>
 

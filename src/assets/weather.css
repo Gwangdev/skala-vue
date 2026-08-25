@@ -1,0 +1,75 @@
+/* Weather 앱 계열(WeatherMockup / WeatherComposition / ...) 공통 스타일.
+   각 컴포넌트가 <style src="@/assets/weather.css" scoped>로 가져다 쓴다.
+   scoped는 파일 단위가 아니라 "가져다 쓰는 컴포넌트" 단위로 적용되므로,
+   여러 컴포넌트가 같은 파일을 가져다 써도 서로 간섭하지 않는다. */
+
+[v-cloak] {
+  display: none !important;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #868e96;
+}
+
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+.weather-card {
+  position: relative;
+  width: 180px;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #f0f6ff;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.weather-card.hot {
+  background-color: #fff1ec;
+}
+
+.weather-card.hovered {
+  background-color: #e7f5ff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  transform: scale(1.05);
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.temp-hot {
+  color: #d9480f;
+  font-weight: bold;
+}
+
+.temp-cool {
+  color: #1971c2;
+}
+
+.tooltip {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #495057;
+}
+
+.status-bar {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: #f8f9fa;
+}
