@@ -47,3 +47,16 @@ __pycache__/
 
 # 강의자료 및 과제 가이드 (저작물 — 저장소 공개 대상 아님)
 guide/
+
+# prompt-maker-harness (로컬 전용 — 과제 제출물이 아님)
+# 경로 참조가 루트 기준으로 고정되어 있고 harness-init이 항상 루트로 rsync하므로
+# 폴더를 옮기지 않고 추적에서만 제외한다.
+.claude/
+CLAUDE.md
+USER_GUIDE.md
+INSIGHTS.md
+PROJECT_STATE.md
+PROJECT_LOG.md
+SPEC.yaml
+reference/
+tools/
