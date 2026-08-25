@@ -53,6 +53,7 @@ guide/
 # 폴더를 옮기지 않고 추적에서만 제외한다.
 .claude/
 CLAUDE.md
+HARNESS.md
 USER_GUIDE.md
 INSIGHTS.md
 PROJECT_STATE.md
