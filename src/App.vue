@@ -1,14 +1,14 @@
 <script setup>
-import WeatherComposition from '@/components/exercise/WeatherComposition.vue'
+import WeatherParent from '@/components/exercise/WeatherParent.vue'
 </script>
 
 <template>
   <main>
-    <h1>skala-vue — Weather 앱</h1>
+    <h1>Film Matching 앱</h1>
 
     <section>
-      <h2>Weather Composition (실습 3)</h2>
-      <WeatherComposition />
+      <h2>Weather Component</h2>
+      <WeatherParent />
     </section>
   </main>
 </template>

@@ -1,8 +1,9 @@
 # skala-vue
 
-SK AX SKALA — Full-stack Engineering / Frontend Framework **Vue.js** 교육과정(4일) 종합 실습 저장소.
+SKALA **Vue.js** 교육과정 종합 실습 저장소
 
-Vue 3 + Vite + Composition API 기반으로, 주제별 문법 실습과 **Weather 앱**을 단계적으로 구현한다.
+Vue 3 + Vite + Composition API 기반으로, 주제별 문법 실습과 **Weather 앱**을 단계적으로 구현하며
+Vue의 특징을 익히고, 이를 응용·확장하여 각 도시별 현재 날씨에 따른 필름 추천 서비스를 만들었다.
 
 - **배포 주소**: undefined
 - **작성자**: Gwangdev(원광식)
@@ -50,7 +51,7 @@ src/
 | 1   | Project Scaffolding     | 프로젝트 스캐폴딩   | [docs/01-scaffolding.md](docs/01-scaffolding.md)                 |
 | 2   | Vue Syntax              | Weather Mockup      | [docs/02-weather-mockup.md](docs/02-weather-mockup.md)           |
 | 3   | Composition API         | Weather Composition | [docs/03-weather-composition.md](docs/03-weather-composition.md) |
-| 4   | Vue Components          | Weather Component   | _진행 예정_                                                      |
+| 4   | Vue Components          | Weather Component   | [docs/04-weather-component.md](docs/04-weather-component.md)     |
 | 5   | Vue Router              | Weather Router      | _진행 예정_                                                      |
 | 6   | Pinia                   | Weather Store       | _진행 예정_                                                      |
 | 7   | Axios                   | Weather Axios       | _진행 예정_                                                      |
@@ -61,14 +62,14 @@ src/
 
 ### 1. Project Scaffolding
 
-`npm create vue@latest`로 생성한 기본 프로젝트를, **본인이 작성한 코드만 화면에 남도록** 정리했다.
+`npm create vue@latest`로 생성한 기본 프로젝트에서 불필요한 default 파일들은 제거해서 Scaffolding 완료
 
-**Customization 요약**
+**과제 세부개발 내용**
 
 - Vite 기본 템플릿 산출물 제거 — `HelloWorld` / `TheWelcome` / `WelcomeItem` / `components/icons`(아이콘 6종) / `assets/logo.svg`
 - `App.vue`를 로고·네비게이션 껍데기에서 **실습 컴포넌트 진입점**으로 재작성. 주제별 `<section>`으로 그룹화
 - `assets/main.css`의 2단 그리드 레이아웃을 900px 단일 컬럼으로 교체 (실습 컴포넌트가 세로로 쌓이는 구조에 맞춤). `base.css`의 색상 변수·리셋은 유지
-- 라우터 미사용 구간 정리 — 라우터 실습 진입 전까지 `router/`·`views/`가 죽은 코드가 되므로 제거하고 `main.js`의 라우터 등록도 해제. 해당 Hands on에서 직접 재구성한다
+- 라우터 미사용 구간 정리 — 라우터 실습때 다시 재구성하기 위해 의도적으로 해당 코드 및 기능 제거
 - `components/practices/`(문법 실습) / `components/exercise/`(Weather 앱) 2계층 분리
 - `.gitignore`에 `.env*` 추가 — 나중에 쓸 OpenWeatherMap API 키가 저장소에 올라가지 않도록 사전 차단
 
@@ -78,9 +79,9 @@ src/
 
 ### 2. Vue Syntax
 
-`v-for` / `v-if` / `:value`+`@input` / 이벤트 수식어를 한 화면(`WeatherMockup.vue`)에 모았다.
+`v-for` / `v-if` / `:value`+`@input` / 이벤트 수식어를 한 화면(`WeatherMockup.vue`)에서 구현함
 
-**Customization 요약**
+**과제 세부개발 내용**
 
 - 도시 데이터 3개 → 6개(본인 연고지 포함) 확장, `humidity`/`icon` 필드 추가
 - 25도 기준 카드 배경색 분기 (`:class`)
@@ -95,29 +96,30 @@ src/
 
 ### 3. Composition API
 
-`WeatherMockup.vue`를 복사해 `computed`/`watch`/`watchEffect`를 적용했다(`WeatherComposition.vue`).
+`WeatherMockup.vue`를 복사해 `computed`/`watch`/`watchEffect`를 적용함
 
-**Customization 요약**
+**과제 세부개발 내용**
 
-- `filteredWeatherList` — 검색어 포함 여부로 필터링하는 `computed`
-- 검색 결과 3단계 분기 (전체 / 결과 있음 / 결과 없음)
-- `watch(selectedCity)` / `watchEffect(searchQuery)` — 상태 변화를 콘솔 로그로 추적
-- 본인 확장: 날씨 상태별 추천 필름 매칭(`matchedFilm`) + 매칭 이력(`filmMatchLog`) — RE100/발전량 예측 아이디어도 검토했으나 정밀 데이터가 유료 API 영역이라 이번엔 보류
+- `filteredWeatherList`를 통해서 검색어 포함 여부로 필터링하는 `computed` 도입
+- 검색 결과를 3단계로 구분 (전체 / 결과 있음 / 결과 없음)
+- `watch(selectedCity)` / `watchEffect(searchQuery)`를 활용하여 상태 변화를 콘솔 로그로 추적
+- 추가 확장 아이디어: 날씨 상태별 추천 필름 매칭(`matchedFilm`) + 매칭 이력(`filmMatchLog`)
 
 자세한 내용: [docs/03-weather-composition.md](docs/03-weather-composition.md)
 
 ---
 
-## 실습과제 평가 기준 (참고용)
+### 4. Vue Components
 
-> **채점 핵심 기준**: 교재 요구사항을 그대로 받아적기만 한 코드는 낮은 점수를 받는다. 채점자가
-> 보는 건 "AI 코드 생성인지, 아니면 Vue를 실제로 이해하고 그 위에 본인만의 기능을 만들었는지"다.
-> 배운 문법을 확장해서 다양하게 응용해본 게 중요하고, 교재 요구사항은 반드시 그대로 지켜야 하는
-> 게 아니다.
+`WeatherComposition.vue` 하나였던 화면을 `WeatherParent`/`BaseDashboardCard`/`SearchBar`/`WeatherCard` 4개의 컴포넌트로 분리함
 
-| 항목      | 배점 | 대응 위치                                                    |
-| --------- | ---- | ------------------------------------------------------------ |
-| 기본 문법 | 25   | `components/practices/basic`, `composition`, `component`     |
-| 확장 문법 | 25   | `router/`, `stores/`, `api/`, `components/practices/library` |
-| 앱 완성도 | 25   | `components/exercise/` + 배포 결과                           |
-| 수업 참여 | 25   | 커밋 이력 및 Code Challenge 기록                             |
+**과제 세부개발 내용**
+
+- 검색박스·리스트박스가 `BaseDashboardCard`의 슬롯을 공유하도록 카드 디자인 공통화
+- `SearchBar`는 props(query)로 표시, 입력마다 `update-query` emit — 엔터 없이 실시간 필터링
+- `WeatherCard`는 props(city)로 표시, `select-card`/`click-detail`/`toggle-favorite` emit
+- Component 탐구: `WeatherCard`에 `variant` prop을 추가해 검색 목록(행)과 전체 도시 보기(타일) 양쪽에서 같은 컴포넌트를 재사용
+- 기능 확장: 도시 데이터를 지역별 도시 수가 다르게(수도권 3~제주권 1) 13개로 확장, 전체 도시를 훑어보는 화면, 지역별 도시 찾기 팝업(`CityFinder`), 도시가 하나뿐인 지역이 소진되면 다른 지역 도시로 대표를 채우는 라운드로빈 로직 도입(`regionUtils.js`)
+- 의문점: 서비스가 커졌을때도 `WeatherParent` 하나가 모든 데이터를 들고 자식에 내려주는 지금 구조가 적합한지 의문이 남음
+
+자세한 내용: [docs/04-weather-component.md](docs/04-weather-component.md)

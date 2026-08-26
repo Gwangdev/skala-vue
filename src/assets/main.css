@@ -1,5 +1,19 @@
 @import './base.css';
 
+/* Weather 앱 팔레트 — weather.css(실습2/3)와 exercise/ 컴포넌트(실습4~)가 공유하는
+   색상 토큰. base.css는 Vite 스캐폴드 기본 테마라 건드리지 않고 여기 따로 둔다. */
+:root {
+  --weather-accent: #1971c2;
+  --weather-cool-text: var(--weather-accent);
+  --weather-hot-text: #d9480f;
+  --weather-hot-bg: #fff1ec;
+  --weather-card-bg: #f0f6ff;
+  --weather-card-hover-bg: #e7f5ff;
+  --weather-muted-text: #868e96;
+  --weather-secondary-text: #495057;
+  --weather-panel-bg: #f8f9fa;
+}
+
 #app {
   max-width: 900px;
   margin: 0 auto;

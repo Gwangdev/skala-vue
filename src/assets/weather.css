@@ -9,7 +9,7 @@
 
 .hint {
   font-size: 0.8rem;
-  color: #868e96;
+  color: var(--weather-muted-text);
 }
 
 .card-list {
@@ -26,18 +26,18 @@
   border: 1px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
-  background-color: #f0f6ff;
+  background-color: var(--weather-card-bg);
   transition:
     transform 0.15s ease,
     background-color 0.15s ease;
 }
 
 .weather-card.hot {
-  background-color: #fff1ec;
+  background-color: var(--weather-hot-bg);
 }
 
 .weather-card.hovered {
-  background-color: #e7f5ff;
+  background-color: var(--weather-card-hover-bg);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
   transform: scale(1.05);
 }
@@ -53,23 +53,23 @@
 }
 
 .temp-hot {
-  color: #d9480f;
+  color: var(--weather-hot-text);
   font-weight: bold;
 }
 
 .temp-cool {
-  color: #1971c2;
+  color: var(--weather-cool-text);
 }
 
 .tooltip {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #495057;
+  color: var(--weather-secondary-text);
 }
 
 .status-bar {
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  background-color: #f8f9fa;
+  background-color: var(--weather-panel-bg);
 }
