@@ -61,3 +61,10 @@ PROJECT_LOG.md
 SPEC.yaml
 reference/
 tools/
+
+# 필름 UI 샌드박스 (로컬 전용 — 제출물 아님)
+sandbox.html
+src/sandbox/
+
+# Codex의 superpowers 스킬이 생성하는 작업 파일 (로컬 전용 — 제출물 아님)
+docs/superpowers/
