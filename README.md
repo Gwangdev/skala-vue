@@ -52,7 +52,7 @@ src/
 | 2   | Vue Syntax              | Weather Mockup      | [docs/02-weather-mockup.md](docs/02-weather-mockup.md)           |
 | 3   | Composition API         | Weather Composition | [docs/03-weather-composition.md](docs/03-weather-composition.md) |
 | 4   | Vue Components          | Weather Component   | [docs/04-weather-component.md](docs/04-weather-component.md)     |
-| 5   | Vue Router              | Weather Router      | _진행 예정_                                                      |
+| 5   | Vue Router              | Weather Router      | [docs/05-weather-router.md](docs/05-weather-router.md)           |
 | 6   | Pinia                   | Weather Store       | _진행 예정_                                                      |
 | 7   | Axios                   | Weather Axios       | _진행 예정_                                                      |
 | 8   | UI Libraries            | Weather UI Library  | _진행 예정_                                                      |
@@ -123,3 +123,21 @@ src/
 - 의문점: 서비스가 커졌을때도 `WeatherParent` 하나가 모든 데이터를 들고 자식에 내려주는 지금 구조가 적합한지 의문이 남음
 
 자세한 내용: [docs/04-weather-component.md](docs/04-weather-component.md)
+
+---
+
+### 5. Vue Router
+
+`WeatherParent` 하나였던 화면을 `views/` 페이지 컴포넌트로 나누고, 화면 전환을 Vue Router로 연결함
+
+**과제 세부개발 내용**
+
+- 라우트 구성: 검색 대시보드 `/`, 전체 도시 보기 `/cities`, 도시 상세 `/weather/:cityId`, 소개 `/about`, catch-all은 `NotFoundView`로 배열 마지막에 배치
+- 모든 route를 지연 로딩(`() => import(...)`)으로 등록, `App.vue`에 `RouterLink` 내비게이션과 `RouterView` 배치
+- 상세보기 이동 방식 변경: `window.alert()` 대신 `router.push('/weather/' + city.id)`로 이동. `WeatherDetailView`는 mount 시점에 `useRoute().params.cityId`로 같은 mock 데이터에서 도시를 찾도록 변경
+- 추가적인 View 페이지 작성: 실습4에서 `viewMode` 로컬 상태로 전환하던 '전체 도시 보기'화면을 `/cities`로 분리해서 Route로 구현함
+- 페이지 간 상태 공유: `WeatherHomeView`와 `WeatherCitiesView`는 서로 다른 컴포넌트 인스턴스라 로컬 상태로는 즐겨찾기·방문 이력이 페이지 이동마다 초기화되므로 `composables/useWeatherDashboard.js`에 상태를 모듈 단위로 선언해 두 페이지가 공유하도록 만듦
+- 지연 로딩 효과 실측: 같은 라우트 설정을 정적 import로 바꿔 빌드해보니 `index.js` 하나 102.89 kB, 지연 로딩(현재)은 93.21 kB + 진입 페이지 청크로 쪼개짐 — 안 가본 페이지 코드는 실제로 그 경로에 들어갈 때만 받음
+- 의문점: 모듈 단위 공유 상태는 페이지 이동 중엔 유지되지만 새로고침하면 초기화되므로 즐겨찾기·방문 이력을 새로고침 뒤에도 남기려면 별도의 장치가 필요해보임
+
+자세한 내용: [docs/05-weather-router.md](docs/05-weather-router.md)
