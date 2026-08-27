@@ -68,7 +68,7 @@ docs/                           # 주제별 추가 학습기록
 - Vite 기본 템플릿 산출물 제거 — `HelloWorld` / `TheWelcome` / `WelcomeItem` / `components/icons`(아이콘 6종) / `assets/logo.svg`
 - `App.vue`를 로고·네비게이션 껍데기에서 **실습 컴포넌트 진입점**으로 재작성. 주제별 `<section>`으로 그룹화
 - `assets/main.css`의 2단 그리드 레이아웃을 900px 단일 컬럼으로 교체 (실습 컴포넌트가 세로로 쌓이는 구조에 맞춤). `base.css`의 색상 변수·리셋은 유지
-- 라우터 미사용 구간 정리 — 라우터 실습때 다시 재구성하기 위해 의도적으로 해당 코드 및 기능 제거
+- 라우터 미사용 구간 정리 (라우터 실습때 다시 재구성하기 위해 의도적으로 해당 코드 및 기능 제거)
 - `components/practices/`(문법 실습) / `components/exercise/`(Weather 앱) 2계층 분리
 - `.gitignore`에 `.env*` 추가 — 나중에 쓸 OpenWeatherMap API 키가 저장소에 올라가지 않도록 사전 차단
 
@@ -84,10 +84,10 @@ docs/                           # 주제별 추가 학습기록
 
 - 도시 데이터 3개 → 6개(본인 연고지 포함) 확장, `humidity`/`icon` 필드 추가
 - 25도 기준 카드 배경색 분기 (`:class`)
-- 즐겨찾기 ⭐ 토글 + "즐겨찾기만 보기" 필터(`v-model` 체크박스) — 상태는 배열 기반(`includes`/`filter`), 강의 범위 밖인 `Set`은 배열로 교체
+- 즐겨찾기 ⭐ 토글 + "즐겨찾기만 보기" 필터(`v-model` 체크박스)
 - 검색어가 비었을 때 "전체 N개 도시" 안내 (`v-if`)
 - 이벤트 다양화: 카드 호버 확대·배경색 변화(`@mouseenter`/`@mouseleave`), 검색 `Enter` 확정(`@submit.prevent`), `Esc` 초기화(`@keyup.esc`)
-- 그 외 안 쓰던 디렉티브(`v-show`/`v-once`/`v-pre`/`v-cloak`/`v-text`/`v-html`)도 실제 쓰임이 있는 자리를 찾아 반영
+- 그 외 안 쓰던 디렉티브(`v-show`/`v-once`/`v-pre`/`v-cloak`/`v-text`/`v-html`)도 실제 쓰임이 있는 자리를 찾아 도입해봄
 
 자세한 내용: [docs/02-weather-mockup.md](docs/02-weather-mockup.md)
 
