@@ -5,7 +5,7 @@ SKALA **Vue.js** 교육과정 종합 실습 저장소
 Vue 3 + Vite + Composition API 기반으로, 주제별 문법 실습과 **Weather 앱**을 단계적으로 구현하며 Vue의 특징을 익히고, 이를 응용·확장하여 각 도시별 현재 날씨에 따른 필름 추천 서비스를 만들었다.
 Handson 순서대로 구현하고 테스트하며 불편한 점들을 고쳤고 해당 과정에서 추가로 도입하면 좋을 것 같은 기능들을 찾아서 구현했다.
 
-- **배포 주소**: _Vercel 배포 후 갱신_
+- **배포 주소**: https://skala-vue-iota-liard.vercel.app
 - **작성자**: Gwangdev(원광식)
 
 ---
