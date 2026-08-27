@@ -1,16 +1,21 @@
 <script setup>
-// 현재 onMounted()를 통해서 라우트 주소를 받아오고 있지만 같은 라우트에서 cityId만 바뀌면 컴포넌트가 재사용돼 
-// onMounted가 다시 실행되지 않으므로 나중에 city간 이동하는 링크가 추가되면 city.value가 갱신되지 않는 문제가 생길 것으로 예상됨.
-import { onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { weatherCities, filmMatches } from '@/data/weatherCities.js'
+import { useConfigStore } from '@/stores/configStore.js'
 
 const route = useRoute()
 const city = ref(null)
+const configStore = useConfigStore()
 
-onMounted(() => {
-  city.value = weatherCities.find((item) => item.id === route.params.cityId) ?? null
-})
+// cityId만 바뀌는 라우트 이동은 컴포넌트를 재사용해 onMounted가 다시 안 돎 — params를 감시
+watch(
+  () => route.params.cityId,
+  (cityId) => {
+    city.value = weatherCities.find((item) => item.id === cityId) ?? null
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -21,7 +26,7 @@ onMounted(() => {
       <dl>
         <div>
           <dt>현재 기온</dt>
-          <dd>{{ city.temp }}°C</dd>
+          <dd>{{ configStore.toDisplayTemp(city.temp) }}{{ configStore.unitSymbol }}</dd>
         </div>
         <div>
           <dt>날씨</dt>

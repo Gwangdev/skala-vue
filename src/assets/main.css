@@ -1,17 +1,34 @@
 @import './base.css';
 
 /* Weather 앱 팔레트 — weather.css(실습2/3)와 exercise/ 컴포넌트(실습4~)가 공유하는
-   색상 토큰. base.css는 Vite 스캐폴드 기본 테마라 건드리지 않고 여기 따로 둔다. */
+   색상 토큰. base.css는 Vite 스캐폴드 기본 테마라 건드리지 않고 여기 따로 둔다.
+   컬러 모드는 Blue(#00B1D2) & Yellow(#FDDB27) 배색 사용(선선함=blue, 더움=yellow).
+   원색은 대비가 약해(흰 배경 기준 각각 2.55:1, 1.37:1) 텍스트 자리만 같은 색조로
+   어둡게 조정, 배경·테두리에는 원색을 그대로 씀. */
 :root {
-  --weather-accent: #1971c2;
+  --weather-accent: #00788f;
   --weather-cool-text: var(--weather-accent);
-  --weather-hot-text: #d9480f;
-  --weather-hot-bg: #fff1ec;
-  --weather-card-bg: #f0f6ff;
-  --weather-card-hover-bg: #e7f5ff;
+  --weather-hot-text: #8a6d0a;
+  --weather-hot-bg: #fff9e0;
+  --weather-card-bg: #eafbff;
+  --weather-card-hover-bg: #c9f3fa;
   --weather-muted-text: #868e96;
   --weather-secondary-text: #495057;
   --weather-panel-bg: #f8f9fa;
+}
+
+/* 흑백 모드는 grayscale로 채도만 제거(명암 구조 유지로 레이아웃 안 깨짐) */
+main[data-tone='mono'] {
+  filter: grayscale(1);
+}
+
+/* UnitToggler/ToneToggler 공통 버튼 스타일(각자 중복 정의하던 걸 통합) */
+.toggle-btn {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-background-soft);
+  cursor: pointer;
 }
 
 #app {

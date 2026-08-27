@@ -2,6 +2,7 @@
 // 클릭·즐겨찾기·상세보기 이벤트 발생시 emit으로 WeatherParent에 전달
 
 import { ref } from 'vue'
+import { useConfigStore } from '@/stores/configStore.js'
 
 defineProps({
   city: { type: Object, required: true },
@@ -13,6 +14,8 @@ defineProps({
 const emit = defineEmits(['select-card', 'click-detail', 'toggle-favorite'])
 
 const hovered = ref(false)
+const configStore = useConfigStore()
+// hot 판정은 표시 단위와 무관하게 원본 섭씨(city.temp) 기준 유지
 </script>
 
 <template>
@@ -30,7 +33,7 @@ const hovered = ref(false)
 
     <template v-if="variant === 'grid'">
       <span class="icon">{{ city.icon }}</span>
-      <strong class="temp">{{ city.temp }}°C</strong>
+      <strong class="temp">{{ configStore.toDisplayTemp(city.temp) }}{{ configStore.unitSymbol }}</strong>
       <span class="name">{{ city.name }}</span>
       <span class="region">{{ city.region }}</span>
       <span class="status">{{ city.status }}</span>
@@ -38,7 +41,7 @@ const hovered = ref(false)
 
     <template v-else>
       <h4>{{ city.icon }} {{ city.name }}</h4>
-      <p>{{ city.temp }}°C / 습도 {{ city.humidity }}%</p>
+      <p>{{ configStore.toDisplayTemp(city.temp) }}{{ configStore.unitSymbol }} / 습도 {{ city.humidity }}%</p>
       <p>{{ city.status }}</p>
       <p v-if="city.temp >= 25" class="temp-hot">🔥 더움 (25도 이상)</p>
       <p v-else class="temp-cool">❄️ 선선함 (25도 미만)</p>
@@ -48,58 +51,13 @@ const hovered = ref(false)
   </div>
 </template>
 
+<!-- 카드 기본 스타일은 weather.css 공유, 이 컴포넌트만의 상태(.selected/.detail-btn/grid)만 아래에 추가-->
+<style src="@/assets/weather.css" scoped></style>
+
 <style scoped>
-.weather-card {
-  position: relative;
-  width: 180px;
-  padding: 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: var(--weather-card-bg);
-  transition:
-    transform 0.15s ease,
-    background-color 0.15s ease;
-}
-
-.weather-card.hot {
-  background-color: var(--weather-hot-bg);
-}
-
-.weather-card.hovered {
-  background-color: var(--weather-card-hover-bg);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-  transform: scale(1.05);
-}
-
 .weather-card.selected {
   border-color: var(--weather-accent);
   border-width: 2px;
-}
-
-.favorite-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
-}
-
-.temp-hot {
-  color: var(--weather-hot-text);
-  font-weight: bold;
-}
-
-.temp-cool {
-  color: var(--weather-cool-text);
-}
-
-.tooltip {
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--weather-secondary-text);
 }
 
 .detail-btn {
@@ -117,7 +75,8 @@ const hovered = ref(false)
   background-color: var(--color-background-soft);
 }
 
-.weather-card.grid.hot {
+.weather-card.grid.hot,
+.weather-card.grid.hovered {
   background-color: var(--color-background-soft);
 }
 

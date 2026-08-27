@@ -5,7 +5,7 @@ import WeatherCard from '@/components/exercise/WeatherCard.vue'
 import { useWeatherDashboard } from '@/composables/useWeatherDashboard.js'
 
 const router = useRouter()
-const { favorites, priorityCities, representativeCities, jumpToCity, toggleFavorite } =
+const { priorityCities, representativeCities, isFavorite, jumpToCity, toggleFavorite } =
   useWeatherDashboard()
 
 // 카드를 고르면 검색 화면 상태를 갱신한 뒤(jumpToCity) 해당 화면으로 돌아간다
@@ -27,7 +27,7 @@ const selectAndReturnHome = (city) => {
           :key="city.id"
           :city="city"
           variant="grid"
-          :is-favorite="favorites.includes(city.id)"
+          :is-favorite="isFavorite(city.id)"
           @select-card="selectAndReturnHome"
           @toggle-favorite="toggleFavorite"
         />
@@ -43,13 +43,16 @@ const selectAndReturnHome = (city) => {
         :key="city.id"
         :city="city"
         variant="grid"
-        :is-favorite="favorites.includes(city.id)"
+        :is-favorite="isFavorite(city.id)"
         @select-card="selectAndReturnHome"
         @toggle-favorite="toggleFavorite"
       />
     </div>
   </section>
 </template>
+
+<!-- .hint는 weather.css 공유, 이 화면만의 것만 남김 -->
+<style src="@/assets/weather.css" scoped></style>
 
 <style scoped>
 .all-cities-section {
@@ -69,9 +72,5 @@ h3 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 0.75rem;
-}
-.hint {
-  font-size: 0.8rem;
-  color: var(--weather-muted-text);
 }
 </style>
