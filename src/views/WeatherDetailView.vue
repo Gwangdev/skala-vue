@@ -4,9 +4,11 @@
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import ExposureCalculator from '@/components/exercise/ExposureCalculator.vue'
+import FilmStrip from '@/components/exercise/FilmStrip.vue'
+import WeatherHero from '@/components/exercise/WeatherHero.vue'
 import { findCityByName, regionOf } from '@/data/cities.js'
 import { filmForBucket } from '@/data/films.js'
-import { mainToStatusBucket, iconForMain, weatherDetailLabel } from '@/utils/weatherBuckets.js'
+import { mainToStatusBucket, weatherDetailLabel } from '@/utils/weatherBuckets.js'
 import { rankPhotoWindows, toLocalHm } from '@/utils/photoWindows.js'
 import { useConfigStore } from '@/stores/configStore.js'
 import { useWeatherStore } from '@/stores/weatherStore.js'
@@ -44,10 +46,10 @@ const photoWindows = computed(() => {
   })
 })
 
-// 골든아워는 일출 직후·일몰 직전 1시간(통상적인 기준). 일출/일몰·박명은 API가 준 시각.
+// 골든아워는 일출 직후·일몰 직전 1시간으로 계산, 일출/일몰·박명은 API가 준 시각 활용
 const shiftHours = (iso, hours) => new Date(Date.parse(iso) + hours * 3600 * 1000).toISOString()
 
-// 빛 시간대를 도시 현지 시각으로 표기(타임존 오프셋은 현재 날씨 응답에서).
+// 빛 시간대를 도시 현지 시각으로 표기
 const sunRows = computed(() => {
   const sun = detail.value?.sun
   const tz = weather.value?.timezoneOffset ?? 0
@@ -68,14 +70,7 @@ const sunRows = computed(() => {
   <section class="detail-view">
     <template v-if="city">
       <p class="eyebrow">{{ city.country }} · {{ regionOf(city) }} 기상 관측</p>
-      <h2>
-        {{ iconForMain(weather?.main) }} {{ city.name }}
-        <span v-if="weather" class="source-badge" :class="weather.source">
-          {{ weather.source === 'live' ? '실시간' : '목 데이터' }}
-        </span>
-      </h2>
-
-      <p v-if="loading && !weather" class="loading">날씨를 불러오는 중…</p>
+      <WeatherHero :city="city" :weather="weather" :loading="loading" />
 
       <template v-if="weather">
         <dl>
@@ -124,6 +119,12 @@ const sunRows = computed(() => {
             </div>
           </dl>
         </section>
+
+        <section class="sub-block">
+          <h3>필름 스트립</h3>
+          <p class="hint">보유 필름 14종. 프레임에 마우스를 올리면 루페로 확대되고, 클릭하면 상세가 열립니다.</p>
+          <FilmStrip />
+        </section>
       </template>
     </template>
 
@@ -149,22 +150,9 @@ const sunRows = computed(() => {
 }
 h2 {
   margin: 0.35rem 0 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
-.source-badge {
-  font-size: 0.68rem;
-  padding: 0.1rem 0.5rem;
-  border-radius: 999px;
-  background: var(--color-background-soft);
-  color: var(--weather-muted-text);
-}
-.source-badge.live {
-  color: var(--weather-accent);
-}
-.loading {
-  color: var(--weather-muted-text);
+.eyebrow + .weather-hero {
+  margin: 0.35rem 0 1.25rem;
 }
 dl {
   display: grid;

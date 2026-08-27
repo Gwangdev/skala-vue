@@ -1,0 +1,25 @@
+/*
+ * 필름 UI 전용 색·간격·라운드 변수. 필름느낌을 구현하고자 만든 별도 스타일로 특정 컴포넌트들에서만 쓰므로, 
+ * 앱 전체 색 변수(base.css의 --color-*)와 섞이지 않게 --film-* 네임스페이스로 분리함.
+ */
+:root {
+  --film-surface-0: #0b0b0d;
+  --film-surface-50: #131315;
+  --film-surface-100: #1c1c1f;
+  --film-surface-200: #2a2a2e;
+  --film-surface-300: #3a3a3f;
+  --film-surface-950: #f4f2ee;
+
+  --film-primary: #e8b33d;
+  --film-primary-contrast: #1a1408;
+
+  --film-text: #efece6;
+  --film-text-muted: #9c9a94;
+
+  --film-border: #2f2f33;
+  --film-radius-sm: 4px;
+  --film-radius-md: 10px;
+  --film-radius-lg: 20px;
+
+  --film-shadow-frame: 0 4px 18px rgba(0, 0, 0, 0.45);
+}

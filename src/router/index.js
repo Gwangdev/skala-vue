@@ -6,11 +6,6 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'weather-home', component: () => import('../views/WeatherHomeView.vue') },
     {
-      path: '/cities',
-      name: 'weather-cities',
-      component: () => import('../views/WeatherCitiesView.vue'),
-    },
-    {
       path: '/weather/:cityName',
       name: 'weather-detail',
       component: () => import('../views/WeatherDetailView.vue'),

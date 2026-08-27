@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="900" height="600">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8d5c4"/>
+      <stop offset="100%" stop-color="#c9a88b"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="3"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="900" height="600" fill="url(#sky)"/>
+  <circle cx="180" cy="120" r="48" fill="#7d5f4c" opacity="0.75"/>
+  <path d="M0 340 L180 300 L360 370 L540 300 L720 320 L900 370 L900 600 L0 600 Z" fill="#c9a88b"/>
+  <path d="M0 460 L240 430 L480 460 L720 490 L900 430 L900 600 L0 600 Z" fill="#3d2e26" opacity="0.9"/>
+
+  <rect width="900" height="600" filter="url(#grain)" opacity="0.42" style="mix-blend-mode:overlay"/>
+</svg>

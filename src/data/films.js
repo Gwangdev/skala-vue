@@ -1,8 +1,24 @@
-// 필름 스톡 목록. 
+// 필름 스톡 목록.
 // speedTier: 감도 구간 라벨(실제 ISO 숫자와 별개 — "몇 단 감도대인가"로 묶어 비교)
 // light: 제 성능을 내는 광량 구간(bright / soft / dim)
 // colorProfile: 같은 감도 구간에서 색 성격으로 한 번 더 좁히는 값
 // (warm / cool / vivid / natural / bw) — tone 설명을 필터 가능한 형태로 압축한 것.
+// image: 필름 스트립에 깔 샘플 프레임. SVG로 직접 만든 그림 활용
+
+import velvia50 from '@/assets/frames/velvia50.svg'
+import panf50 from '@/assets/frames/panf50.svg'
+import ektar100 from '@/assets/frames/ektar100.svg'
+import provia100f from '@/assets/frames/provia100f.svg'
+import fp4plus125 from '@/assets/frames/fp4plus125.svg'
+import gold200 from '@/assets/frames/gold200.svg'
+import fujicolorc200 from '@/assets/frames/fujicolorc200.svg'
+import portra400 from '@/assets/frames/portra400.svg'
+import pro400h from '@/assets/frames/pro400h.svg'
+import hp5 from '@/assets/frames/hp5.svg'
+import ultramax400 from '@/assets/frames/ultramax400.svg'
+import cinestill from '@/assets/frames/cinestill.svg'
+import portra800 from '@/assets/frames/portra800.svg'
+import superiax800 from '@/assets/frames/superiax800.svg'
 
 export const films = [
   // --- iso50 구간 (강한 직사광 전용, 2종) ---
@@ -15,6 +31,7 @@ export const films = [
     colorProfile: 'vivid',
     tone: '초고채도 슬라이드',
     note: '풍경용 슬라이드 필름. 관용도가 좁아 노출이 정확해야 하고 빛이 많이 필요하다.',
+    image: velvia50,
   },
   {
     id: 'panf50',
@@ -25,6 +42,7 @@ export const films = [
     colorProfile: 'bw',
     tone: '흑백·초미세입자',
     note: '흑백 중 입자가 가장 곱다. 감도가 낮아 맑은 날 야외가 아니면 셔터스피드가 급격히 느려진다.',
+    image: panf50,
   },
 
   // --- iso100 구간 (맑은 날 기준, 3종) ---
@@ -37,6 +55,7 @@ export const films = [
     colorProfile: 'vivid',
     tone: '고채도·미세입자',
     note: '입자가 가장 곱고 색이 진하다. 광량이 충분해야 하므로 흐린 날에는 불리하다.',
+    image: ektar100,
   },
   {
     id: 'provia100f',
@@ -47,6 +66,7 @@ export const films = [
     colorProfile: 'cool',
     tone: '슬라이드·차가운 발색',
     note: '슬라이드 필름 특성상 노출 관용도가 좁다. 맑은 날 파란 톤이 또렷하게 산다.',
+    image: provia100f,
   },
   {
     id: 'fp4plus125',
@@ -57,6 +77,7 @@ export const films = [
     colorProfile: 'bw',
     tone: '흑백·범용 중간톤',
     note: '실제 감도는 125지만 100 구간과 같이 묶어도 노출 차이가 크지 않은 범용 흑백 필름.',
+    image: fp4plus125,
   },
 
   // --- iso200 구간 (맑음~옅은 구름, 2종) ---
@@ -69,6 +90,7 @@ export const films = [
     colorProfile: 'warm',
     tone: '황금빛 채도',
     note: '햇빛이 강한 낮에 노란기가 두드러진다. 맑은 날 야외에서 가장 자기다운 색이 나온다.',
+    image: gold200,
   },
   {
     id: 'fujicolorc200',
@@ -79,6 +101,7 @@ export const films = [
     colorProfile: 'natural',
     tone: '자연스러운 중간 채도',
     note: 'Gold 200보다 채도가 차분해서, 같은 광량이라도 더 사실적인 색을 원할 때 대체재가 된다.',
+    image: fujicolorc200,
   },
 
   // --- iso400 구간 (구름 낀 하늘, 가장 무난한 범용대, 4종) ---
@@ -91,6 +114,7 @@ export const films = [
     colorProfile: 'warm',
     tone: '따뜻한 중간톤',
     note: '관용도가 넓어 노출을 조금 놓쳐도 살아난다. 인물 피부톤 기준으로 설계된 필름.',
+    image: portra400,
   },
   {
     id: 'pro400h',
@@ -101,6 +125,7 @@ export const films = [
     colorProfile: 'cool',
     tone: '차가운 파스텔',
     note: '흐린 하늘의 푸른기를 그대로 받아낸다. 대비가 낮아 부드럽게 떨어진다.',
+    image: pro400h,
   },
   {
     id: 'hp5',
@@ -111,6 +136,7 @@ export const films = [
     colorProfile: 'bw',
     tone: '흑백·중간 대비',
     note: '증감에 관대해 광량이 애매할 때 기준으로 삼기 좋은 흑백 필름.',
+    image: hp5,
   },
   {
     id: 'ultramax400',
@@ -121,6 +147,7 @@ export const films = [
     colorProfile: 'vivid',
     tone: '선명한 스냅 컬러',
     note: 'Portra 400보다 대비와 채도가 강해서, 흐린 날에도 색이 죽지 않길 원할 때 고른다.',
+    image: ultramax400,
   },
 
   // --- iso800 구간 (흐림~실내, 3종) ---
@@ -133,6 +160,7 @@ export const films = [
     colorProfile: 'warm',
     tone: '텅스텐·할레이션',
     note: '인공광 아래 색온도를 맞춘 영화용 필름. 광원 주변에 붉은 번짐이 남는다.',
+    image: cinestill,
   },
   {
     id: 'portra800',
@@ -143,6 +171,7 @@ export const films = [
     colorProfile: 'warm',
     tone: '따뜻한 저조도',
     note: 'Portra 400의 저조도 버전. 실내·해질녘처럼 빛이 줄어드는 상황에서 톤을 유지한다.',
+    image: portra800,
   },
   {
     id: 'superiax800',
@@ -153,6 +182,7 @@ export const films = [
     colorProfile: 'natural',
     tone: '녹색조 강조',
     note: '흐린 날씨나 실내에서 녹색·자연광 계열 색이 두드러지는 소비자용 필름.',
+    image: superiax800,
   },
 ]
 

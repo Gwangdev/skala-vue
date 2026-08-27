@@ -1,75 +1,50 @@
 <script setup>
-// 도시를 지역별로 묶어 보여주는 팝업창 구현
-defineProps({
+// 도시를 지역별로 묶어 보여주는 팝업. 오버레이·ESC·포커스 트랩·스크롤 락은 el-dialog가 맡고,
+// 지역별 칩 목록만 자체 마크업으로 채움.
+import { computed } from 'vue'
+
+const props = defineProps({
   visible: { type: Boolean, default: false },
   regions: { type: Array, required: true },
 })
 
 const emit = defineEmits(['close', 'select'])
+
+// el-dialog는 v-model로 열림 상태를 양방향 바인딩하므로, 부모의 visible/close를 프록시로 연결
+const dialogVisible = computed({
+  get: () => props.visible,
+  set: (value) => {
+    if (!value) emit('close')
+  },
+})
 </script>
 
 <template>
-  <div v-if="visible" class="finder-overlay" @click.self="emit('close')">
-    <div class="finder-panel">
-      <header class="finder-header">
-        <h3>도시 찾기</h3>
-        <button type="button" class="close-btn" @click="emit('close')">✕</button>
-      </header>
-      <div class="region-list">
-        <section v-for="group in regions" :key="group.region" class="region-block">
-          <h4>{{ group.region }}</h4>
-          <div class="city-chips">
-            <button
-              v-for="city in group.cities"
-              :key="`${city.countryCode}-${city.name}`"
-              type="button"
-              class="city-chip"
-              @click="emit('select', city)"
-            >
-              <span class="chip-country">{{ city.country }}</span>
-              {{ city.name }}
-            </button>
-          </div>
-        </section>
-      </div>
+  <el-dialog v-model="dialogVisible" title="도시 찾기" width="28rem">
+    <div class="region-list">
+      <section v-for="group in regions" :key="group.region" class="region-block">
+        <h4>{{ group.region }}</h4>
+        <div class="city-chips">
+          <button
+            v-for="city in group.cities"
+            :key="`${city.countryCode}-${city.name}`"
+            type="button"
+            class="city-chip"
+            @click="emit('select', city)"
+          >
+            <span class="chip-country">{{ city.country }}</span>
+            {{ city.name }}
+          </button>
+        </div>
+      </section>
     </div>
-  </div>
+  </el-dialog>
 </template>
 
 <style scoped>
-.finder-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-
-.finder-panel {
-  width: min(28rem, 90vw);
-  max-height: 70vh;
+.region-list {
+  max-height: 60vh;
   overflow-y: auto;
-  background: var(--color-background);
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
-}
-
-.finder-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: 0.75rem;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
 }
 
 .region-block {

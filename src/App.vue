@@ -15,7 +15,6 @@ const configStore = useConfigStore()
       <div class="nav-row">
         <nav aria-label="주요 메뉴">
           <RouterLink to="/">검색 대시보드</RouterLink>
-          <RouterLink to="/cities">전체 도시</RouterLink>
           <RouterLink to="/about">서비스 소개</RouterLink>
         </nav>
         <div class="toggler-row">
