@@ -53,7 +53,7 @@ src/
 | 3   | Composition API         | Weather Composition | [docs/03-weather-composition.md](docs/03-weather-composition.md) |
 | 4   | Vue Components          | Weather Component   | [docs/04-weather-component.md](docs/04-weather-component.md)     |
 | 5   | Vue Router              | Weather Router      | [docs/05-weather-router.md](docs/05-weather-router.md)           |
-| 6   | Pinia                   | Weather Store       | _진행 예정_                                                      |
+| 6   | Pinia                   | Weather Store       | [docs/06-weather-store.md](docs/06-weather-store.md)             |
 | 7   | Axios                   | Weather Axios       | _진행 예정_                                                      |
 | 8   | UI Libraries            | Weather UI Library  | _진행 예정_                                                      |
 | 9   | Vite Build & Deployment | Weather Deployment  | _진행 예정_                                                      |
@@ -141,3 +141,18 @@ src/
 - 의문점: 모듈 단위 공유 상태는 페이지 이동 중엔 유지되지만 새로고침하면 초기화되므로 즐겨찾기·방문 이력을 새로고침 뒤에도 남기려면 별도의 장치가 필요해보임
 
 자세한 내용: [docs/05-weather-router.md](docs/05-weather-router.md)
+
+### 6. Pinia
+
+온도 단위를 전역 상태로 관리하는 `configStore`를 만들고, `useWeatherDashboard`가 들고 있던 상태 중 새로고침 후에도 남아야 하는 값을 Pinia store로 옮김
+
+**과제 세부개발 내용**
+
+- `stores/configStore.js`: `unit`(state)/`unitSymbol`(getter)/`toggleUnit`(action)을 setup store 문법으로 작성, `UnitToggler`를 `App.vue` 내비게이션 옆에 배치
+- 검색 대시보드·상세보기·전체 도시 보기의 온도 표시 세 자리 모두 단위 변환 적용, "더움" 판정은 원본 섭씨 기준 유지, 변환 계산은 store 쪽에 모아둠
+- 즐겨찾기·방문 이력·검색어·선택 도시(페이지 간 전달 값)를 `stores/journeyStore.js`로 옮기고 `localStorage`에 동기화하여 새로고침해도 데이터가 남아있도록 개선함
+- `configStore`에 컬러/흑백(`tone`) 토글 추가
+- 리팩터링: 여러 store에 반복되던 localStorage 영속화 코드를 공용 composable로 통합, 컴포넌트별로 중복 정의되던 스타일도 공유로 정리
+- 버그 수정: `WeatherDetailView`의 라우트 재사용 문제, `/cities` 그리드 카드 hover 시 색이 새는 CSS 우선순위 문제
+
+자세한 내용: [docs/06-weather-store.md](docs/06-weather-store.md)
