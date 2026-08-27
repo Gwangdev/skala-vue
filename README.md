@@ -5,7 +5,7 @@ SKALA **Vue.js** 교육과정 종합 실습 저장소
 Vue 3 + Vite + Composition API 기반으로, 주제별 문법 실습과 **Weather 앱**을 단계적으로 구현하며
 Vue의 특징을 익히고, 이를 응용·확장하여 각 도시별 현재 날씨에 따른 필름 추천 서비스를 만들었다.
 
-- **배포 주소**: undefined
+- **배포 주소**: _Vercel 배포 후 갱신_
 - **작성자**: Gwangdev(원광식)
 
 ---
@@ -14,11 +14,15 @@ Vue의 특징을 익히고, 이를 응용·확장하여 각 도시별 현재 날
 
 ```sh
 npm install
-npm run dev      # 개발 서버 (http://localhost:5173)
-npm run build    # 프로덕션 빌드 → dist/
-npm run lint     # ESLint 검사
-npm run format   # Prettier 포맷팅
+npm run dev                # 개발 서버 (http://localhost:5173)
+npm run build              # 프로덕션 빌드 → dist/
+npm run build:staging      # --mode staging (.env.staging 로드)
+npm run build:production   # --mode production (.env.production 로드)
+npm run lint               # ESLint 검사
+npm run format             # Prettier 포맷팅
 ```
+
+API 키는 `.env`에 `VITE_OPENWEATHERMAP_API_KEY`로 넣는다(`.env.example` 참고, `.gitignore`로 추적 제외). 배포 시에는 호스트 환경변수로 주입한다.
 
 ---
 
@@ -26,21 +30,16 @@ npm run format   # Prettier 포맷팅
 
 ```
 src/
-├── App.vue                     # 실습 컴포넌트 진입점
+├── App.vue                     # 라우터 셸(네비게이션 + RouterView)
 ├── main.js
-├── assets/                     # base.css(색상 변수·리셋) + main.css(레이아웃)
-├── components/
-│   ├── practices/              # 주제별 코드 챌린지 아카이브
-│   │   ├── basic/              #  Vue Syntax — directive
-│   │   ├── composition/        #  Composition API
-│   │   ├── component/          #  Components
-│   │   └── library/            #  Pinia / UI Library
-│   └── exercise/               # 실습과제 저장소
-├── stores/                     # Pinia
-└── docs/                       # 주제별 추가 학습기록
+├── assets/                     # base.css·main.css + film-tokens.css, frames/(필름 SVG)
+├── components/exercise/        # 실습과제 컴포넌트
+├── composables/  router/  services/  stores/  utils/
+└── views/                      # 라우트별 페이지
+docs/                           # 주제별 추가 학습기록
 ```
 
-`practices/`는 문법 연습자료 아카이브, `exercise/`는 실습과제 성과품의 저장소로 활용
+문법 연습 스크래치(`components/practices/`)는 제출물과 무관해 저장소 추적에서 제외했다(로컬에만 존재).
 
 ---
 
@@ -56,7 +55,7 @@ src/
 | 6   | Pinia                   | Weather Store       | [docs/06-weather-store.md](docs/06-weather-store.md)             |
 | 7   | Axios                   | Weather Axios       | [docs/07-weather-axios.md](docs/07-weather-axios.md)             |
 | 8   | UI Libraries            | Weather UI Library  | [docs/08-weather-ui-library.md](docs/08-weather-ui-library.md)   |
-| 9   | Vite Build & Deployment | Weather Deployment  | _진행 예정_                                                      |
+| 9   | Vite Build & Deployment | Weather Deployment  | [docs/09-weather-deployment.md](docs/09-weather-deployment.md)   |
 
 ---
 
@@ -178,14 +177,29 @@ src/
 
 ### 8. UI Libraries
 
-지역별 도시 찾기 팝업을 Element Plus `el-dialog`로 바꾸고, 검색 대시보드와 전체 도시 보기 화면을 하나로 합침
+지역별 도시 찾기 팝업과 필름 확대 뷰를 Element Plus `el-dialog`로 처리하고, 검색 대시보드와 전체 도시 보기를 한 화면으로 합치면서 날씨 배너·필름 스트립을 붙임
 
 **과제 세부개발 내용**
 
 - 화면 병합: 실습7에서 도시가 91개로 늘며 검색 대시보드와 `/cities`가 사실상 같은 내용을 보여주게 되어, 두 화면을 검색 대시보드 하나로 합치고 `/cities` 라우트·`WeatherCitiesView`를 제거. 검색어가 없으면 최근 탐색·즐겨찾기와 국가별 대표 도시를 소제목으로 나눠 배치
-- 라이브러리 선정: 국내 사용례가 많고 라이선스가 순수 MIT인 Element Plus를 골라 `main.js`에 전역 등록(강의 9.3 방식)
-- 팝업 교체: 자체 오버레이·바깥 클릭 닫기·창 전역 ESC 리스너를 걷어내고 포커스 트랩·스크롤 락·ARIA까지 `el-dialog`에 맡김. 칩 목록 등 내부 구성은 자체 마크업 유지
-- 검색 입력을 `el-input`(clearable)으로, 목 데이터 폴백 알림을 `ElMessage` 토스트로 교체
-- 자체 CSS(필름 연출·배색·흑백 토글)는 라이브러리로 옮기지 않고, 손으로 짜면 번거로운 상호작용 자리에만 `el-*`를 둠
+- 라이브러리 선정: Element Plus를 골라 `main.js`에 전역 등록 + 기본 CSS 로드
+- `el-dialog` 적용 — 지역별 도시 찾기 팝업, 필름 프레임 확대 뷰(`FilmLightbox`): 오버레이·ESC·포커스 트랩·스크롤 락·ARIA를 라이브러리가 처리, 내부 내용만 자체 마크업
+- 검색 입력을 `el-input`(clearable)으로, Mock 데이터 폴백 알림을 `ElMessage` 토스트로 교체
+- 날씨 배너(`WeatherHero`)와 필름 스트립(`FilmStrip` — 가로 드래그 스크롤 + 마우스 루페 + 클릭 확대) 이식. 루페·드래그·필름 그레인은 라이브러리에 대응 컴포넌트가 없어 자체 CSS·JS로 남김
 
 자세한 내용: [docs/08-weather-ui-library.md](docs/08-weather-ui-library.md)
+
+---
+
+### 9. Vite Build & Deployment
+
+ESLint 에러를 없애고, 문법 연습 폴더를 저장소에서 빼고, 모드별 빌드 스크립트와 Vercel 배포 설정을 붙임
+
+**과제 세부개발 내용**
+
+- ESLint: 남은 에러는 전부 `components/practices/`(문법 연습)에서 나와, 이 폴더를 저장소 추적에서 빼고(`git rm --cached` + `.gitignore`) 린트 대상에서도 제외. 본 실습 코드는 에러 0
+- 환경변수: `.env`(실제 키)는 추적 제외 유지, `.env.staging`·`.env.production`에 `VITE_APP_MODE` 라벨만 두고 `build:staging`·`build:production` 스크립트 추가. About 화면에 빌드 모드 표시
+- 빌드: `npm run build` → `dist/`에 해시 붙은 정적 파일 생성 확인
+- 배포(Vercel): history 모드라 `vercel.json`에 SPA fallback rewrite 추가. 루트 배포라 `base`는 기본값 유지. 저장소 연결·키 입력·배포는 대시보드에서 직접
+
+자세한 내용: [docs/09-weather-deployment.md](docs/09-weather-deployment.md)
