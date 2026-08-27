@@ -55,7 +55,7 @@ src/
 | 5   | Vue Router              | Weather Router      | [docs/05-weather-router.md](docs/05-weather-router.md)           |
 | 6   | Pinia                   | Weather Store       | [docs/06-weather-store.md](docs/06-weather-store.md)             |
 | 7   | Axios                   | Weather Axios       | [docs/07-weather-axios.md](docs/07-weather-axios.md)             |
-| 8   | UI Libraries            | Weather UI Library  | _진행 예정_                                                      |
+| 8   | UI Libraries            | Weather UI Library  | [docs/08-weather-ui-library.md](docs/08-weather-ui-library.md)   |
 | 9   | Vite Build & Deployment | Weather Deployment  | _진행 예정_                                                      |
 
 ---
@@ -173,3 +173,19 @@ src/
 - 노출값(EV) 기반 필름 계산: 광량 조건 → EV100, 조리개·최대 셔터스피드로 최대 ISO 상한을 구해 보유 필름 14종을 좁힘
 
 자세한 내용: [docs/07-weather-axios.md](docs/07-weather-axios.md)
+
+---
+
+### 8. UI Libraries
+
+지역별 도시 찾기 팝업을 Element Plus `el-dialog`로 바꾸고, 검색 대시보드와 전체 도시 보기 화면을 하나로 합침
+
+**과제 세부개발 내용**
+
+- 화면 병합: 실습7에서 도시가 91개로 늘며 검색 대시보드와 `/cities`가 사실상 같은 내용을 보여주게 되어, 두 화면을 검색 대시보드 하나로 합치고 `/cities` 라우트·`WeatherCitiesView`를 제거. 검색어가 없으면 최근 탐색·즐겨찾기와 국가별 대표 도시를 소제목으로 나눠 배치
+- 라이브러리 선정: 국내 사용례가 많고 라이선스가 순수 MIT인 Element Plus를 골라 `main.js`에 전역 등록(강의 9.3 방식)
+- 팝업 교체: 자체 오버레이·바깥 클릭 닫기·창 전역 ESC 리스너를 걷어내고 포커스 트랩·스크롤 락·ARIA까지 `el-dialog`에 맡김. 칩 목록 등 내부 구성은 자체 마크업 유지
+- 검색 입력을 `el-input`(clearable)으로, 목 데이터 폴백 알림을 `ElMessage` 토스트로 교체
+- 자체 CSS(필름 연출·배색·흑백 토글)는 라이브러리로 옮기지 않고, 손으로 짜면 번거로운 상호작용 자리에만 `el-*`를 둠
+
+자세한 내용: [docs/08-weather-ui-library.md](docs/08-weather-ui-library.md)
