@@ -11,7 +11,7 @@
 5. **WeatherAboutView.vue** / **NotFoundView.vue**: 소개 페이지, 정의되지 않은 경로 처리
 6. 개인적으로 추가한 view 작성 및 라우팅 — 전체 도시 보기를 `WeatherCitiesView.vue`로 분리
 
-파일: `src/router/index.js`, `src/views/` 5개, `src/composables/useWeatherDashboard.js`
+파일: `src/router/index.js`, `src/views/` 외 7개,
 
 ## 과제 세부 개발내용
 

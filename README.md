@@ -54,7 +54,7 @@ src/
 | 4   | Vue Components          | Weather Component   | [docs/04-weather-component.md](docs/04-weather-component.md)     |
 | 5   | Vue Router              | Weather Router      | [docs/05-weather-router.md](docs/05-weather-router.md)           |
 | 6   | Pinia                   | Weather Store       | [docs/06-weather-store.md](docs/06-weather-store.md)             |
-| 7   | Axios                   | Weather Axios       | _진행 예정_                                                      |
+| 7   | Axios                   | Weather Axios       | [docs/07-weather-axios.md](docs/07-weather-axios.md)             |
 | 8   | UI Libraries            | Weather UI Library  | _진행 예정_                                                      |
 | 9   | Vite Build & Deployment | Weather Deployment  | _진행 예정_                                                      |
 
@@ -153,6 +153,23 @@ src/
 - 즐겨찾기·방문 이력·검색어·선택 도시(페이지 간 전달 값)를 `stores/journeyStore.js`로 옮기고 `localStorage`에 동기화하여 새로고침해도 데이터가 남아있도록 개선함
 - `configStore`에 컬러/흑백(`tone`) 토글 추가
 - 리팩터링: 여러 store에 반복되던 localStorage 영속화 코드를 공용 composable로 통합, 컴포넌트별로 중복 정의되던 스타일도 공유로 정리
-- 버그 수정: `WeatherDetailView`의 라우트 재사용 문제, `/cities` 그리드 카드 hover 시 색이 새는 CSS 우선순위 문제
+- 버그 수정: `/cities` 그리드 카드 hover 시 색이 새는 CSS 우선순위 문제
 
 자세한 내용: [docs/06-weather-store.md](docs/06-weather-store.md)
+
+---
+
+### 7. Axios
+
+목업 데이터로 만들었던 Weather 앱을 OpenWeatherMap API 데이터를 불러와서 활용하도록 바꾸고, 도시 목록을 16개국 91개로 확장함
+
+**과제 세부개발 내용**
+
+- 도시 데이터 분리: `data/cities.js`는 이름·국가·국가코드만 든 목록으로 남기고, 날씨 수치는 `stores/weatherStore.js`가 따로 채우도록 정적/동적 분리
+- Weather API 조회: 예보·대기오염·일출/일몰 API가 전부 좌표를 요구하는 데이터라 `{name},{countryCode}`로 좌표를 먼저 구해 `/data/2.5/weather` 호출. 좌표는 모듈 캐시에 보관. 키 없음·호출 실패 시 도시 이름 시드 Mock 데이터로 폴백(`source` 배지로 구분)
+- 비동기 로딩 처리: 날씨가 아직 없는 카드는 "불러오는 중" 표시, `Promise.all` 병렬 조회 도입, 무료 API 규약(분당 60건) 때문에 화면에 실제로 보이는 도시만 조회
+- 추가 OWM API: 5일/3시간 예보 + 대기오염 예보를 상세 화면에 붙이고, 두 값을 합쳐 "사진 찍기 좋은 시간"을 점수화
+- 기타 외부 API: sunrise-sunset.org(키 불필요)로 일출·일몰·시민박명을 받아 도시 현지 시각 골든아워·블루아워 표시
+- 노출값(EV) 기반 필름 계산: 광량 조건 → EV100, 조리개·최대 셔터스피드로 최대 ISO 상한을 구해 보유 필름 14종을 좁힘
+
+자세한 내용: [docs/07-weather-axios.md](docs/07-weather-axios.md)

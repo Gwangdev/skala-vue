@@ -9,8 +9,7 @@
 3. 검색 대시보드(`WeatherHomeView`)·상세보기(`WeatherDetailView`)의 온도 표시에 단위 변환 적용
 4. 본인만의 추가 Store 작성 또는 `configStore` 확장
 
-파일: `src/stores/configStore.js`, `src/stores/journeyStore.js`,
-`src/composables/usePersistedRef.js`, `src/components/exercise/UnitToggler.vue`, `src/components/exercise/ToneToggler.vue`
+파일: `src/stores/configStore.js` 외 4개
 
 ## 과제 세부 개발내용
 
@@ -19,7 +18,6 @@
 - **즐겨찾기·방문 이력의 Pinia 이관**(`journeyStore.js`): `useWeatherDashboard.js`의 모듈 상태 중 새로고침 후에도 남아야 하는 값만 옮기고 `localStorage`에 동기화. 여러 화면에 흩어진 즐겨찾기 판정 중복도 store 쪽 getter 하나로 정리. 이후 검색어·선택 도시(페이지 간 전달 값)도 같은 store로 옮기고, 관련 동작들의 입력 형태를 전부 도시 객체로 통일
 - **컬러/흑백 토글**(`tone` state): 흑백 모드는 별도 팔레트 없이 화면 전체에 grayscale 필터를 걸어 채도만 제거. 컬러 모드 배색은 Blue #00B1D2 & Yellow #FDDB27 — 원색은 흰 배경 대비가 약해 텍스트 색만 같은 색조로 어둡게 조정
 - **반복 패턴 정리**: 여러 store에서 localStorage 불러오기·저장 로직이 거의 같은 모양으로 반복되던 걸 공용 composable로 통합하고, 컴포넌트마다 따로 정의돼 있던 겹치는 스타일도 공유 파일로 정리
-- **라우트 재사용 버그 수정**(`WeatherDetailView`): 실습5 때부터 주석으로 남겨둔 문제 — 같은 라우트에서 도시만 바뀌면 컴포넌트가 재사용돼 화면이 안 갱신될 수 있는 구조였음. 라우트 파라미터를 감시하는 방식으로 고침
 - **그리드 카드 hover 버그 수정**(`/cities`): 무채색 배경 규칙과 hover 색상 규칙의 CSS 우선순위가 같아서, 최종 빌드 순서에 따라 hover 시 의도와 다르게 색이 들어올 수 있는 구조였음. 우선순위를 명확히 갈라서 순서와 무관하게 항상 무채색이 이기도록 고침
 - **토글 버튼 문구 수정**: "온도 단위 °F"/"컬러"처럼 현재 상태만 보여주던 문구를 "°C로 보기"/"흑백으로 보기"처럼 클릭 결과를 보여주는 문구로 변경
 
