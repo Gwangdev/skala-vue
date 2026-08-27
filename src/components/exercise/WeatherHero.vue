@@ -35,13 +35,9 @@ const GRADIENT_BY_MAIN = {
 }
 
 const icon = computed(() => ICON_BY_MAIN[props.weather?.main] ?? '🌤️')
-const gradient = computed(
-  () => GRADIENT_BY_MAIN[props.weather?.main] ?? 'var(--film-surface-100)',
-)
+const gradient = computed(() => GRADIENT_BY_MAIN[props.weather?.main] ?? 'var(--film-surface-100)')
 const displayTemp = computed(() =>
-  props.weather
-    ? `${configStore.toDisplayTemp(props.weather.temp)}${configStore.unitSymbol}`
-    : '',
+  props.weather ? `${configStore.toDisplayTemp(props.weather.temp)}${configStore.unitSymbol}` : '',
 )
 </script>
 

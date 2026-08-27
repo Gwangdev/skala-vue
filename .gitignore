@@ -38,12 +38,17 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
-# Environment variables (8챕터 OpenWeatherMap API 키 보호)
+# Environment variables — 실제 키가 든 .env는 제외, 모드 라벨만 든 파일은 예외로 추적
 .env
 .env.*
 !.env.example
+!.env.staging
+!.env.production
 __pycache__/
 .claude/settings.local.json
+
+# 문법 연습 스크래치 (로컬 전용 — 제출물 아님, 실습9에서 저장소 추적 해제)
+src/components/practices/
 
 # 강의자료 및 과제 가이드 (저작물 — 저장소 공개 대상 아님)
 guide/

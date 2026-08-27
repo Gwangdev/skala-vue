@@ -11,7 +11,8 @@ export default defineConfig([
     files: ['**/*.{vue,js,mjs,jsx}'],
   },
 
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
+  // practices/는 문법 연습 스크래치라 저장소에서 빼고 로컬에만 둠(.gitignore). 린트 대상도 아님
+  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**', 'src/components/practices/**']),
 
   {
     languageOptions: {
