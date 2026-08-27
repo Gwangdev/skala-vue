@@ -21,12 +21,13 @@ const emit = defineEmits(['close', 'select'])
           <div class="city-chips">
             <button
               v-for="city in group.cities"
-              :key="city.id"
+              :key="`${city.countryCode}-${city.name}`"
               type="button"
               class="city-chip"
               @click="emit('select', city)"
             >
-              {{ city.icon }} {{ city.name }}
+              <span class="chip-country">{{ city.country }}</span>
+              {{ city.name }}
             </button>
           </div>
         </section>
@@ -97,5 +98,11 @@ const emit = defineEmits(['close', 'select'])
 
 .city-chip:hover {
   border-color: var(--weather-accent);
+}
+
+.chip-country {
+  font-size: 0.68rem;
+  color: var(--weather-muted-text);
+  margin-right: 0.35rem;
 }
 </style>

@@ -1,51 +1,137 @@
 <script setup>
-import { ref, watch } from 'vue'
+// 도시 상세 뷰
+// 진입 시 loadDetail(city)로 현재 날씨 + 예보 + 대기오염 + 일출/일몰을 한 번에 호출
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { weatherCities, filmMatches } from '@/data/weatherCities.js'
+import ExposureCalculator from '@/components/exercise/ExposureCalculator.vue'
+import { findCityByName, regionOf } from '@/data/cities.js'
+import { filmForBucket } from '@/data/films.js'
+import { mainToStatusBucket, iconForMain, weatherDetailLabel } from '@/utils/weatherBuckets.js'
+import { rankPhotoWindows, toLocalHm } from '@/utils/photoWindows.js'
 import { useConfigStore } from '@/stores/configStore.js'
+import { useWeatherStore } from '@/stores/weatherStore.js'
 
 const route = useRoute()
-const city = ref(null)
 const configStore = useConfigStore()
+const weatherStore = useWeatherStore()
 
-// cityId만 바뀌는 라우트 이동은 컴포넌트를 재사용해 onMounted가 다시 안 돎 — params를 감시
-watch(
-  () => route.params.cityId,
-  (cityId) => {
-    city.value = weatherCities.find((item) => item.id === cityId) ?? null
-  },
-  { immediate: true },
-)
+const city = ref(null)
+const loading = ref(false)
+
+onMounted(async () => {
+  const found = findCityByName(decodeURIComponent(route.params.cityName ?? ''))
+  city.value = found
+  if (!found) return
+  loading.value = true
+  try {
+    await weatherStore.loadDetail(found)
+  } finally {
+    loading.value = false
+  }
+})
+
+const weather = computed(() => (city.value ? weatherStore.weatherFor(city.value.name) : null))
+const detail = computed(() => (city.value ? weatherStore.detailFor(city.value.name) : null))
+const status = computed(() => (weather.value ? mainToStatusBucket(weather.value.main) : ''))
+const matchedFilm = computed(() => (status.value ? filmForBucket(status.value) : ''))
+
+const photoWindows = computed(() => {
+  if (!detail.value?.forecast) return []
+  const tz = weather.value?.timezoneOffset ?? 0
+  return rankPhotoWindows(detail.value.forecast).map((win) => {
+    const local = new Date(win.at + tz * 1000)
+    return { ...win, label: `${local.getUTCMonth() + 1}/${local.getUTCDate()} ${String(local.getUTCHours()).padStart(2, '0')}시` }
+  })
+})
+
+// 골든아워는 일출 직후·일몰 직전 1시간(통상적인 기준). 일출/일몰·박명은 API가 준 시각.
+const shiftHours = (iso, hours) => new Date(Date.parse(iso) + hours * 3600 * 1000).toISOString()
+
+// 빛 시간대를 도시 현지 시각으로 표기(타임존 오프셋은 현재 날씨 응답에서).
+const sunRows = computed(() => {
+  const sun = detail.value?.sun
+  const tz = weather.value?.timezoneOffset ?? 0
+  if (!sun) return []
+  const hm = (iso) => toLocalHm(iso, tz)
+  return [
+    { label: '블루아워(아침)', value: `${hm(sun.civilTwilightBegin)}~${hm(sun.sunrise)}` },
+    { label: '일출', value: hm(sun.sunrise) },
+    { label: '골든아워(아침)', value: `${hm(sun.sunrise)}~${hm(shiftHours(sun.sunrise, 1))}` },
+    { label: '골든아워(저녁)', value: `${hm(shiftHours(sun.sunset, -1))}~${hm(sun.sunset)}` },
+    { label: '일몰', value: hm(sun.sunset) },
+    { label: '블루아워(저녁)', value: `${hm(sun.sunset)}~${hm(sun.civilTwilightEnd)}` },
+  ]
+})
 </script>
 
 <template>
   <section class="detail-view">
     <template v-if="city">
-      <p class="eyebrow">{{ city.region }} 기상 관측</p>
-      <h2>{{ city.icon }} {{ city.name }}</h2>
-      <dl>
-        <div>
-          <dt>현재 기온</dt>
-          <dd>{{ configStore.toDisplayTemp(city.temp) }}{{ configStore.unitSymbol }}</dd>
-        </div>
-        <div>
-          <dt>날씨</dt>
-          <dd>{{ city.status }}</dd>
-        </div>
-        <div>
-          <dt>습도</dt>
-          <dd>{{ city.humidity }}%</dd>
-        </div>
-        <div>
-          <dt>추천 필름</dt>
-          <dd>{{ filmMatches[city.status] ?? '추천 필름 준비 중' }}</dd>
-        </div>
-      </dl>
+      <p class="eyebrow">{{ city.country }} · {{ regionOf(city) }} 기상 관측</p>
+      <h2>
+        {{ iconForMain(weather?.main) }} {{ city.name }}
+        <span v-if="weather" class="source-badge" :class="weather.source">
+          {{ weather.source === 'live' ? '실시간' : '목 데이터' }}
+        </span>
+      </h2>
+
+      <p v-if="loading && !weather" class="loading">날씨를 불러오는 중…</p>
+
+      <template v-if="weather">
+        <dl>
+          <div>
+            <dt>현재 기온</dt>
+            <dd>{{ configStore.toDisplayTemp(weather.temp) }}{{ configStore.unitSymbol }}</dd>
+          </div>
+          <div>
+            <dt>날씨</dt>
+            <dd>{{ status }} ({{ weatherDetailLabel(weather) }})</dd>
+          </div>
+          <div>
+            <dt>습도</dt>
+            <dd>{{ weather.humidity }}%</dd>
+          </div>
+          <div>
+            <dt>구름량</dt>
+            <dd>{{ weather.cloudsPercent }}%</dd>
+          </div>
+          <div>
+            <dt>추천 필름</dt>
+            <dd>{{ matchedFilm }}</dd>
+          </div>
+        </dl>
+
+        <ExposureCalculator :weather="weather" />
+
+        <section class="sub-block" v-if="photoWindows.length">
+          <h3>사진 찍기 좋은 시간</h3>
+          <p class="hint">예보 구간 중 구름 적고 대기오염 낮은 순.</p>
+          <ul class="window-list">
+            <li v-for="win in photoWindows" :key="win.at">
+              {{ win.label }} — 구름 {{ win.cloudsPercent }}%,
+              대기질 {{ win.aqi ? `${win.aqi}단계` : '정보 없음' }}
+              <span class="score">점수 {{ win.score }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="sub-block" v-if="sunRows.length">
+          <h3>빛 시간대</h3>
+          <dl class="sun-grid">
+            <div v-for="row in sunRows" :key="row.label">
+              <dt>{{ row.label }}</dt>
+              <dd>{{ row.value }}</dd>
+            </div>
+          </dl>
+        </section>
+      </template>
     </template>
+
     <template v-else>
       <h2>도시 정보를 찾을 수 없습니다.</h2>
-      <p>주소의 도시 코드가 현재 mock 데이터에 없습니다.</p>
+      <p>주소의 도시 이름이 현재 목록에 없습니다.</p>
     </template>
+
     <RouterLink to="/">대시보드로 돌아가기</RouterLink>
   </section>
 </template>
@@ -63,6 +149,22 @@ watch(
 }
 h2 {
   margin: 0.35rem 0 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.source-badge {
+  font-size: 0.68rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-background-soft);
+  color: var(--weather-muted-text);
+}
+.source-badge.live {
+  color: var(--weather-accent);
+}
+.loading {
+  color: var(--weather-muted-text);
 }
 dl {
   display: grid;
@@ -79,5 +181,35 @@ dt {
 }
 dd {
   margin: 0;
+}
+.sub-block {
+  margin-top: 1.5rem;
+}
+.sub-block h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+.hint {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--weather-muted-text);
+}
+.window-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+}
+.window-list .score {
+  color: var(--weather-muted-text);
+  font-size: 0.78rem;
+  margin-left: 0.4rem;
+}
+.sun-grid {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+}
+.sun-grid div {
+  grid-template-columns: 8rem 1fr;
 }
 </style>

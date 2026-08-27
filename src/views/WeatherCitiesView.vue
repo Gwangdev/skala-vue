@@ -1,14 +1,21 @@
 <script setup>
-// 실습4에서 WeatherParent 안 viewMode 토글로만 존재하던 "전체 도시 보기"를 /cities 라우트로 연결해서 별도 페이지로 분리함
+// 실습4의 viewMode 토글을 /cities 라우트로 분리한 페이지. API데이터로 바꾸면서 
+// 화면에 올라온 도시(방문·즐겨찾기 + 대표)만 weatherStore로 조회되도록 수정
+import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import WeatherCard from '@/components/exercise/WeatherCard.vue'
 import { useWeatherDashboard } from '@/composables/useWeatherDashboard.js'
+import { useWeatherStore } from '@/stores/weatherStore.js'
 
 const router = useRouter()
 const { priorityCities, representativeCities, isFavorite, jumpToCity, toggleFavorite } =
   useWeatherDashboard()
+const weatherStore = useWeatherStore()
 
-// 카드를 고르면 검색 화면 상태를 갱신한 뒤(jumpToCity) 해당 화면으로 돌아간다
+const shownCities = computed(() => [...priorityCities.value, ...representativeCities.value])
+watch(shownCities, (cities) => weatherStore.loadWeatherForCities(cities), { immediate: true })
+
+// 카드를 고르면 검색 화면 상태를 갱신한 뒤 그 화면으로 돌아감
 const selectAndReturnHome = (city) => {
   jumpToCity(city)
   router.push('/')
@@ -18,32 +25,34 @@ const selectAndReturnHome = (city) => {
 <template>
   <section class="all-cities-section">
     <h2>전체 도시 보기</h2>
-    <p class="hint">최근 탐색과 즐겨찾기를 우선으로, 지역별 대표 도시를 이어서 보여줍니다.</p>
+    <p class="hint">최근 탐색과 즐겨찾기를 우선으로, 국가별 대표 도시를 이어서 보여줍니다.</p>
     <template v-if="priorityCities.length > 0">
       <h3>최근 탐색 · 즐겨찾기</h3>
       <div class="city-grid">
         <WeatherCard
           v-for="city in priorityCities"
-          :key="city.id"
+          :key="city.name"
           :city="city"
+          :weather="weatherStore.weatherFor(city.name)"
           variant="grid"
-          :is-favorite="isFavorite(city.id)"
+          :is-favorite="isFavorite(city.name)"
           @select-card="selectAndReturnHome"
           @toggle-favorite="toggleFavorite"
         />
       </div>
     </template>
-    <h3>지역별 대표 도시</h3>
+    <h3>국가별 대표 도시</h3>
     <p v-if="representativeCities.length === 0" class="hint">
-      모든 지역의 도시를 이미 탐색했습니다.
+      모든 국가의 도시를 이미 탐색했습니다.
     </p>
     <div class="city-grid">
       <WeatherCard
         v-for="city in representativeCities"
-        :key="city.id"
+        :key="city.name"
         :city="city"
+        :weather="weatherStore.weatherFor(city.name)"
         variant="grid"
-        :is-favorite="isFavorite(city.id)"
+        :is-favorite="isFavorite(city.name)"
         @select-card="selectAndReturnHome"
         @toggle-favorite="toggleFavorite"
       />
@@ -51,7 +60,7 @@ const selectAndReturnHome = (city) => {
   </section>
 </template>
 
-<!-- .hint는 weather.css 공유, 이 화면만의 것만 남김 -->
+<!-- .hint는 weather.css 공유, 이 화면만에 필요한 style만 남김 -->
 <style src="@/assets/weather.css" scoped></style>
 
 <style scoped>
